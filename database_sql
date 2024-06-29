@@ -1,0 +1,131 @@
+CREATE TABLE Automaker (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    logo_url VARCHAR(255),
+    description TEXT,
+    website_url VARCHAR(255)
+);
+
+CREATE TABLE Model (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    automaker_id INT,
+    name VARCHAR(255),
+    type VARCHAR(50),
+    FOREIGN KEY (automaker_id) REFERENCES Automaker(id)
+);
+
+CREATE TABLE Generation (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    model_id INT,
+    start_year YEAR,
+    end_year YEAR,
+    FOREIGN KEY (model_id) REFERENCES Model(id)
+);
+
+CREATE TABLE Engine (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    displacement FLOAT,
+    horsepower INT,
+    fuel_type VARCHAR(50),
+    cylinders INT,
+    transmission VARCHAR(50),
+    drive_type VARCHAR(50)
+);
+
+CREATE TABLE Generation_Engine (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    generation_id INT,
+    engine_id INT,
+    engine_name VARCHAR(255),
+    FOREIGN KEY (generation_id) REFERENCES Generation(id),
+    FOREIGN KEY (engine_id) REFERENCES Engine(id)
+);
+
+CREATE TABLE Specification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    generation_id INT,
+    engine_id INT,
+    description TEXT,
+    length FLOAT,
+    width FLOAT,
+    height FLOAT,
+    curb_weight FLOAT,
+    fuel_economy FLOAT,
+    zero_to_a_hundred FLOAT,
+    top_speed FLOAT,
+    body_style VARCHAR(255),
+    tire_size VARCHAR(50),
+    primary_image_url VARCHAR(255),
+    FOREIGN KEY (generation_id) REFERENCES Generation(id),
+    FOREIGN KEY (engine_id) REFERENCES Engine(id)
+);
+
+CREATE TABLE Image (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    generation_id INT,
+    image_url VARCHAR(255),
+    is_primary BOOLEAN,
+    FOREIGN KEY (generation_id) REFERENCES Generation(id)
+);
+
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(255),
+    password_hash VARCHAR(255)
+);
+
+CREATE TABLE Article (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    generation_id INT,
+    title VARCHAR(255),
+    content TEXT,
+    article_photo VARCHAR(255),
+    FOREIGN KEY (generation_id) REFERENCES Generation(id)
+);
+
+CREATE TABLE Comment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    article_id INT,
+    content TEXT,
+    timestamp TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    FOREIGN KEY (article_id) REFERENCES Article(id)
+);
+
+CREATE TABLE Rating (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    generation_id INT,
+    performance_rating INT,
+    comfort_rating INT,
+    reliability_rating INT,
+    fuel_efficiency_rating INT,
+    safety_rating INT,
+    design_rating INT,
+    value_for_money_rating INT,
+    overall_rating INT,
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    FOREIGN KEY (generation_id) REFERENCES Generation(id)
+);
+
+CREATE TABLE Favorite (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    generation_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+    FOREIGN KEY (generation_id) REFERENCES Generation(id)
+);
+
+CREATE TABLE Contribution (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    content TEXT,
+    content_type VARCHAR(50),
+    related_table VARCHAR(50),
+    related_id INT,
+    status VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+);
